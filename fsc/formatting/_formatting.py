@@ -7,9 +7,11 @@
 
 from __future__ import division, print_function
 
-__all__ = ["sstr"]
+__all__ = ["sstr", "nice_class_name", "error_prefix"]
 
 import math
+import blessings
+tc = blessings.Terminal()
 
 def sstr(obj, length = 50):
     """
@@ -32,7 +34,19 @@ def sstr(obj, length = 50):
             not_shown += 1
         
         half_shown = (len(output) - not_shown)/2
-        
         output = output[:math.floor(half_shown)] + " ...{}... ".format(not_shown) + output[-math.ceil(half_shown):]
+        
     return output
 
+def nice_class_name(obj):
+    output = str(obj.__class__)
+    output = output.split("'")[1]
+    #remove hidden modules (starting with _)
+    
+    output = output.split(".")
+    output = filter(lambda s: not s.startswith("_"), output)
+    
+    return ".".join(output)
+
+def error_prefix(obj):
+    return tc.bold_white_on_red(nice_class_name(obj) + ":") + " "
