@@ -1,1 +1,1 @@
-This should describe the module very briefly (about one sentence). 
+This modules offers convenient string formating operations.
