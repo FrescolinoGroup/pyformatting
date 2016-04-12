@@ -7,13 +7,13 @@
 
 from __future__ import division, print_function
 
-__all__ = ["sstr", "nice_class_name", "error_prefix"]
-
 import math
 import blessings
-tc = blessings.Terminal()
 
-def sstr(obj, length = 50):
+from fsc.export import export
+
+@export
+def shorten(obj, length=50):
     """
     Returns the str representation of an object, and shortens it, if it is too long.
     
@@ -34,19 +34,25 @@ def sstr(obj, length = 50):
             not_shown += 1
         
         half_shown = (len(output) - not_shown)/2
-        output = output[:math.floor(half_shown)] + " ...{}... ".format(not_shown) + output[-math.ceil(half_shown):]
-        
+        output = output[:math.floor(half_shown)] + "...<{}>...".format(not_shown) + output[-math.ceil(half_shown):]
+
+        if len(output) > length:
+            raise ValueError("'length={}' too small to shorten string '{}' of length {}.".format(length, output, len(output)))
+
     return output
 
-def nice_class_name(obj):
-    output = str(obj.__class__)
-    output = output.split("'")[1]
-    #remove hidden modules (starting with _)
+#~ @export
+#~ def nice_class_name(obj):
+    #~ output = str(obj.__class__)
+    #~ output = output.split("'")[1]
+    #~ #remove hidden modules (starting with _)
     
-    output = output.split(".")
-    output = filter(lambda s: not s.startswith("_"), output)
+    #~ output = output.split(".")
+    #~ output = (s for s in output if not s.startswith("_"))
     
-    return ".".join(output)
+    #~ return ".".join(output)
 
-def error_prefix(obj):
-    return tc.bold_white_on_red(nice_class_name(obj) + ":") + " "
+#~ @export
+#~ def error_prefix(obj):
+    #~ tc = blessings.Terminal()
+    #~ return tc.bold_white_on_red(nice_class_name(obj) + ":") + " "
