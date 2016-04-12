@@ -34,7 +34,7 @@ def shorten(obj, length=50):
             not_shown += 1
         
         half_shown = (len(output) - not_shown)/2
-        output = output[:math.floor(half_shown)] + "...<{}>...".format(not_shown) + output[-math.ceil(half_shown):]
+        output = output[:math.floor(half_shown)] + "<...{}...>".format(not_shown) + output[-math.ceil(half_shown):]
 
         if len(output) > length:
             raise ValueError("'length={}' too small to shorten string '{}' of length {}.".format(length, output, len(output)))
