@@ -13,31 +13,42 @@ import blessings
 from fsc.export import export
 
 @export
-def shorten(obj, length=50):
+def shorten(obj, length=50, show_number=True):
     """
     Returns the str representation of an object, and shortens it, if it is too long.
     
-    Args:
-        obj:  Any python object that we want to convert to a string.
-        length (int): The maximal length of the resulting string.
-    
+    :param obj: Any python object that should be converted to a string.
+
+    :param length: The maximal length of the resulting string.
+    :type length: int
+
+    :param show_number: Controls whether the number of omitted characters is shown (``<...N...>``) or not (``<...>``).
+    :type show_number: bool
+
     Returns:
-        str.  This string is guaranteed to have maximal size length.
+        str.  This string is guaranteed to have maximal size ``length``.
 
     """
     output = str(obj)
     if len(output) > length: # shorten too long objects to certain size
-        not_shown = len(output) - length + 8
-        nslen = len(str(not_shown))
-        not_shown += nslen
-        if len(str(not_shown)) > nslen:
-            not_shown += 1
-        
-        half_shown = (len(output) - not_shown)/2
-        output = output[:math.floor(half_shown)] + "<...{}...>".format(not_shown) + output[-math.ceil(half_shown):]
+        if show_number:
+            format_str = '<...{}...>'
+        else:
+            format_str = '<...>'
 
-        if len(output) > length:
+        not_shown = 0
+        placeholder = format_str.format(not_shown)
+        # check if the placeholder has grown in size and adjust accordingly
+        while len(output) - not_shown + len(placeholder) > length:
+            not_shown = len(output) - length + len(placeholder)
+            placeholder = format_str.format(not_shown)
+
+        # if not_shown grows larger than the original string, the formatting doesn't work
+        if len(output) < not_shown:
             raise ValueError("'length={}' too small to shorten string '{}' of length {}.".format(length, output, len(output)))
+        
+        half_shown = (len(output) - not_shown) / 2 # must be int
+        output = output[:math.floor(half_shown)] + placeholder + output[-math.ceil(half_shown):]
 
     return output
 
