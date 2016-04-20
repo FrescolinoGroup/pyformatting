@@ -1,14 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # 
-# Author:  Mario S. Könz <mskoenz@gmx.net>
+# Author:  Mario S. Könz <mskoenz@gmx.net>, Dominik Gresch <greschd@gmx.ch>
 # Date:    11.04.2016 09:54:50 CEST
 # File:    _formatting.py
 
 from __future__ import division, print_function
 
+import re
 import math
-import blessings
+import collections as co
+try:
+    from functools import singledispatch
+except ImportError:
+    from singledispatch import singledispatch # Python 3.3 and lower
 
 from fsc.export import export
 
@@ -67,3 +72,91 @@ def shorten(obj, length=50, show_number=True):
 #~ def error_prefix(obj):
     #~ tc = blessings.Terminal()
     #~ return tc.bold_white_on_red(nice_class_name(obj) + ":") + " "
+
+@export
+def without_ansi(string):
+    """Removes (some) ANSI escape codes from the string"""
+    ansi_escape = re.compile(r'\x1b[^m]*m', re.IGNORECASE)
+    string = ansi_escape.sub('', string)
+    pattern = re.compile(r'\x1b\([A-Z]', re.IGNORECASE)
+    return pattern.sub('', string)
+
+@export
+@singledispatch
+def to_box(
+    iterable,
+    width=70,
+    padding='auto',
+    centering_line='longest'
+):
+    padding = min([_box_padding(string, centering_line, width) for string in iterable])
+    output = ''
+    for string in iterable[:-1]:
+        output += to_box(
+            string,
+            padding=padding,
+            width=width,
+            centering_line=centering_line,
+            no_endline = True
+        )
+    output += to_box(
+        iterable[-1],
+        padding=padding,
+        width=width,
+        centering_line=centering_line,
+        no_endline = False
+    )
+    return output
+
+@to_box.register(str)
+def _(
+    string,
+    width=70,
+    padding="auto",
+    centering_line="longest",
+    no_endline=False
+):
+    """
+    padding:        space on left side; auto -> longest line is centered
+    centering_line: longest or first -> which line to center, only
+                    applies when padding is auto
+    width:     width of the to_box (without # characters)
+    no_endline:     Suppress ending line of the box. This can be used to concatenate boxes.
+    """
+    # splitting the string into lines
+    lines = string.split('\n')
+
+    # getting the values for padding
+    if(padding == "auto"):
+        padding = _box_padding(string, centering_line, width)
+
+    # checking total size
+    for line in lines:
+        if(len(without_ansi(line)) > width - padding):
+            warnings.warn("strings too long, might look ugly",
+            UserWarning)
+
+    # creating the string
+    endline = '+' + width * '-' + '+'
+    box_str = endline + '\n'
+
+    for line in lines:
+        line_temp = '|' + padding * ' ' + line
+        line_temp += ' ' * max(0, (width + 1 - len(without_ansi(line_temp)))) + '|\n'
+        box_str += line_temp
+    if not no_endline:
+        box_str += endline
+    return box_str
+
+def _box_padding(string, centering_line, width):
+    lines = string.split('\n')
+    if(centering_line != "first" and centering_line != "longest"):
+        warnings.warn("centering_line: invalid argument, using 'longest'",
+        UserWarning)
+    if centering_line == 'first':
+        text_width = len(without_ansi(lines[0]))
+    elif centering_line == 'longest': # longest
+        text_width = max([len(without_ansi(line)) for line in lines])
+    else:
+        raise ValueError("Unknown value '{}' for 'centering_line', must be one of {{'first', 'longest'}}".format(centering_line))
+    return (width - text_width) // 2

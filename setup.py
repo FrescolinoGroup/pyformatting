@@ -5,7 +5,7 @@
 # Date:    30.03.2016 00:29:06 CEST
 # File:    setup.py
 
-
+import sys
 from setuptools import setup
 
 pkgname = 'formatting'
@@ -22,6 +22,10 @@ except IOError:
 with open('version.txt', 'r') as f:
     version = f.read().strip()
 
+requirements = ['fsc.export']
+if sys.version_info < (3,4):
+    requirements.append('singledispatch')
+
 setup(
     name=pkgname_qualified,
     version=version,
@@ -33,7 +37,7 @@ setup(
     author='C. Frescolino',
     author_email='frescolino@lists.phys.ethz.ch',
     description=description,
-    install_requires=['fsc.export'],
+    install_requires=requirements,
     long_description=readme,
     classifiers=[
         'License :: OSI Approved :: Apache Software License',
