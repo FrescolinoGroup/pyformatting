@@ -56,7 +56,7 @@ The ``padding`` keyword can be used to manually align the strings on the left si
 
 .. code :: python
 
-    >>> print(fsc.formatting.to_box('line 1\nline 2', padding=3, width=20)
+    >>> print(fsc.formatting.to_box('line 1\nline 2', padding=3, width=20))
     +--------------------+
     |   line 1           |
     |   line 2           |
