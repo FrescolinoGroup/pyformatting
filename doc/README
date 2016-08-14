@@ -1,1 +1,1 @@
-The README should contain a longer description of the module.
+This module contains functions for nicely formatting strings. Current functionalities include shortening a string to a certain size and drawing a box around a string.
