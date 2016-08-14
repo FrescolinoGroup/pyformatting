@@ -1,5 +1,5 @@
 pyformatting
-===========
+============
 
 This module contains functions for nicely formatting strings. Current functionalities include shortening a string to a certain size and drawing a box around a string.
 

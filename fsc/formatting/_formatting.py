@@ -9,6 +9,7 @@ from __future__ import division, print_function
 
 import re
 import math
+import warnings
 import collections as co
 try:
     from functools import singledispatch
@@ -90,13 +91,16 @@ def to_box(
     centering_line='longest'
 ):
     """
-    Returns a string where each 
+    Returns a string where a box is drawn around the given string (or iterable of strings). The length of each line should not be longer than the width of the box, otherwise the box might look bad.
     
-    padding:        space on left side; auto -> longest line is centered
-    centering_line: longest or first -> which line to center, only
-                    applies when padding is auto
-    width:     width of the to_box (without # characters)
-    no_endline:     Suppress ending line of the box. This can be used to concatenate boxes.
+    :param width:   Width of the box, without the box itself.
+    :type width:    int
+    
+    :param padding: Space on the left side of the string. Per default (``padding='auto'``), the padding is such that the ``centering_line`` is centered. 
+    :type padding:  int
+
+    :param centering_line:  Determines which line should be centered. Valid arguments are 'first' and 'longest'. 
+    :type centering_line:   str
     """
     padding = min([_box_padding(string, centering_line, width) for string in iterable])
     output = ''
