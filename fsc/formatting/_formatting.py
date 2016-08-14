@@ -89,6 +89,15 @@ def to_box(
     padding='auto',
     centering_line='longest'
 ):
+    """
+    Returns a string where each 
+    
+    padding:        space on left side; auto -> longest line is centered
+    centering_line: longest or first -> which line to center, only
+                    applies when padding is auto
+    width:     width of the to_box (without # characters)
+    no_endline:     Suppress ending line of the box. This can be used to concatenate boxes.
+    """
     padding = min([_box_padding(string, centering_line, width) for string in iterable])
     output = ''
     for string in iterable[:-1]:
@@ -116,13 +125,6 @@ def _(
     centering_line="longest",
     no_endline=False
 ):
-    """
-    padding:        space on left side; auto -> longest line is centered
-    centering_line: longest or first -> which line to center, only
-                    applies when padding is auto
-    width:     width of the to_box (without # characters)
-    no_endline:     Suppress ending line of the box. This can be used to concatenate boxes.
-    """
     # splitting the string into lines
     lines = string.split('\n')
 
