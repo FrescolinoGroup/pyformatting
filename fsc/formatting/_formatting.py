@@ -21,7 +21,7 @@ from fsc.export import export
 @export
 def shorten(obj, length=50, show_number=True):
     """
-    Returns the str representation of an object, and shortens it, if longer than ``length``.
+    Returns the str representation of an object and shortens it if longer than ``length``.
     
     :param obj: Any python object that should be converted to a string.
 
@@ -76,7 +76,7 @@ def shorten(obj, length=50, show_number=True):
 
 @export
 def without_ansi(string):
-    """Removes (some) ANSI escape codes from the string"""
+    """Removes ANSI escape codes which match one of the two patterns '\x1b[^m]*m' and '\x1b\([A-Z]' from the string."""
     ansi_escape = re.compile(r'\x1b[^m]*m', re.IGNORECASE)
     string = ansi_escape.sub('', string)
     pattern = re.compile(r'\x1b\([A-Z]', re.IGNORECASE)
