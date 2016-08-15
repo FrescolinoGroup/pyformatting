@@ -21,7 +21,7 @@ from fsc.export import export
 @export
 def shorten(obj, length=50, show_number=True):
     """
-    Returns the str representation of an object, and shortens it, if it is too long.
+    Returns the str representation of an object, and shortens it, if longer than ``length``.
     
     :param obj: Any python object that should be converted to a string.
 
