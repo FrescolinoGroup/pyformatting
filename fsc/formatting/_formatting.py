@@ -54,7 +54,7 @@ def shorten(obj, length=50, show_number=True):
             raise ValueError("'length={}' too small to shorten string '{}' of length {}.".format(length, output, len(output)))
         
         half_shown = (len(output) - not_shown) / 2 # must be int
-        output = output[:math.floor(half_shown)] + placeholder + output[-math.ceil(half_shown):]
+        output = output[:int(math.floor(half_shown))] + placeholder + output[-int(math.ceil(half_shown)):]
 
     return output
 
