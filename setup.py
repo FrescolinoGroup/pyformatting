@@ -6,6 +6,7 @@
 # File:    setup.py
 
 import sys
+
 from setuptools import setup
 
 pkgname = 'formatting'
