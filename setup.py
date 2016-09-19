@@ -25,6 +25,8 @@ with open('version.txt', 'r') as f:
 requirements = ['fsc.export']
 if sys.version_info < (3,4):
     requirements.append('singledispatch')
+if sys.version_info < (3,):
+    requirements.append('fsc')
 
 setup(
     name=pkgname_qualified,
