@@ -13,7 +13,7 @@ pkgname = 'formatting'
 pkgname_qualified = 'fsc.' + pkgname
 
 with open('doc/description.txt', 'r') as f:
-    description = f.read()
+    description = f.read().strip()
 try:
     with open('doc/README', 'r') as f:
         readme = f.read()
